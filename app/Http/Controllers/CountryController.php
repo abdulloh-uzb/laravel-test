@@ -75,7 +75,7 @@ class CountryController extends Controller
     public function destroy(Request $request, Country $country)
     {
 
-        if ($request->user()->cannot('update', $country)) {
+        if ($request->user()->cannot('delete', $country)) {
             abort(403);
         }
 
