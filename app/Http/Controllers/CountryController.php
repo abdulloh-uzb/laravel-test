@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\CountryRequest;
+use App\Models\Country;
+use App\Commands\CreateCountryCommand;
+use App\Commands\UpdateCountryCommand;
+use App\Commands\DeleteCountryCommand;
+use App\Services\CommandBus;
+use Inertia\Inertia;
+use App\Commands\Command;
+
+
+class CountryController extends Controller
+{
+    private CommandBus $commandBus;
+
+    public function __construct(CommandBus $commandBus)
+    {
+        $this->commandBus = $commandBus;
+    }
+
+    public function index()
+    {
+        $countries = Country::all();
+        return Inertia::render('Countries/index', [
+            "countries" => $countries
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Countries/create');
+    }
+
+    public function store(CountryRequest $request)
+    {
+        $command = new CreateCountryCommand($request->validated());
+        $this->commandBus->handle($command);
+
+        return redirect()->route("country.index");
+    }
+
+    public function show(Country $country)
+    {
+        return Inertia::render("Countries/show", [
+            "country" => $country
+        ]);
+    }
+
+    public function edit(Country $country)
+    {
+        return Inertia::render("Countries/edit", [
+            "country" => $country
+        ]);
+    }
+
+    public function update(CountryRequest $request, Country $country)
+    {
+        $command = new UpdateCountryCommand($country, $request->validated());
+        $this->commandBus->handle($command);
+
+        return redirect()->route("country.index");
+    }
+
+    public function destroy(Country $country)
+    {
+        $command = new DeleteCountryCommand($country);
+        $this->commandBus->handle($command);
+        
+        return redirect()->back();
+    }
+}
