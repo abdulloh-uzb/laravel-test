@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("capital");
             $table->unsignedBigInteger("population");
             $table->enum("continent", ["asia", "africa", "australia", "europe", "north america", "south america"]);
+            $table->foreignId("author_id")->constrained("users")->cascadeOnDelete();
             $table->timestamps();
         });
     }

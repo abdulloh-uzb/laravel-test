@@ -23,7 +23,7 @@ class CountryController extends Controller
 
     public function index()
     {
-        $countries = Country::all();
+        $countries = Country::where("author_id", auth("web")->user()->id)->get();
         return Inertia::render('Countries/index', [
             "countries" => $countries
         ]);
@@ -36,7 +36,10 @@ class CountryController extends Controller
 
     public function store(CountryRequest $request)
     {
-        $command = new CreateCountryCommand($request->validated());
+        $data = $request->validated();
+        $data['author_id'] = auth('web')->user()->id;;
+
+        $command = new CreateCountryCommand($data);
         $this->commandBus->handle($command);
 
         return redirect()->route("country.index");
