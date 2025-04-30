@@ -10,7 +10,7 @@ use App\Commands\DeleteCountryCommand;
 use App\Services\CommandBus;
 use Inertia\Inertia;
 use App\Commands\Command;
-
+use Illuminate\Http\Request;
 
 class CountryController extends Controller
 {
@@ -52,8 +52,13 @@ class CountryController extends Controller
         ]);
     }
 
-    public function edit(Country $country)
+    public function edit(Request $request, Country $country)
     {
+
+        if ($request->user()->cannot('update', $country)) {
+            abort(403);
+        }
+    
         return Inertia::render("Countries/edit", [
             "country" => $country
         ]);
@@ -67,8 +72,13 @@ class CountryController extends Controller
         return redirect()->route("country.index");
     }
 
-    public function destroy(Country $country)
+    public function destroy(Request $request, Country $country)
     {
+
+        if ($request->user()->cannot('update', $country)) {
+            abort(403);
+        }
+
         $command = new DeleteCountryCommand($country);
         $this->commandBus->handle($command);
         
