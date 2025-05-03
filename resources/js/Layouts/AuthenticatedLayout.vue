@@ -46,6 +46,13 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Countries
                                 </NavLink>
+
+                                <NavLink
+                                    :href="route('games.index')"
+                                    :active="route().current('games.index')"
+                                >
+                                    Play game
+                                </NavLink>
                             </div>
                         </div>
 

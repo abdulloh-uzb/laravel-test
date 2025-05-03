@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\GameController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -24,6 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('country', CountryController::class);
+    Route::get("question", [GameController::class, "question"])->name("games.index");
+    Route::post("submit-answers", [GameController::class, "submit"])->name("submit.answers");
 });
+
+
 
 require __DIR__.'/auth.php';
